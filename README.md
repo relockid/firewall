@@ -1,6 +1,6 @@
 # Relock Identity Firewall
 
-**Relock Firewall** is a HTTP based application uses the Relock Server cryptographic keys roattion mechanism to verificate user browser identity.
+**Relock Firewall** is an mini HTTP-based application that leverages the Relock Server’s cryptographic key rotation mechanism to verify the identity of the user's browser. This ensures that each request is authenticated securely and passively, without relying on shared secrets or interrupting the user experience."
 
 ---
 

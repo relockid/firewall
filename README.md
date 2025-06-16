@@ -1,6 +1,6 @@
 # Relock Identity Firewall
 
-**Relock Firewall** is a HTTP based application uses the Relock Server cryptographic keys roattion mechanism to verificate user browser identity. 
+**Relock Firewall** is a HTTP based application uses the Relock Server cryptographic keys roattion mechanism to verificate user browser identity.
 
 ---
 
@@ -16,69 +16,81 @@ The Relock Mmiddleware uses environment variables to configure its runtime behav
 ### Required variables
 | Variable |  Default  | Description |
 |:-----|:--------:|------:|
-| ```RELOCK_SDK_HOST```   | localhost | Host/IP of the TCP SDK |
-| ```RELOCK_SDK_PORT```   |  8111     | Port used to connect to SDK |
-| ```RELOCK_LOG_LEVEL```   | INFO |    Logging level (DEBUG, etc.) |
-| ```RELOCK_SDK_TIMEOUT```  | 30.0 |    TCP socket timeout (seconds)|
+| ```RELOCK_SERVICE_HOST```   | 127.0.0.1 | Host/IP of the TCP Server |
+| ```RELOCK_SERVICE_API```   |  | Host/IP of the TCP Server |
+| ```RELOCK_SERVICE_PORT```   | 8111 | Port used to connect to SDK |
+| ```RELOCK_SERVICE_POOL```   | 3 | Number of socket connections by server |
+| ```RELOCK_SERVICE_PING```  | True | pre-ping connection before query |
+| ```RELOCK_SERVICE_TIMEOUT```  | 60 | connection timeout |
+| ```RELOCK_SERVICE_TAB_LOGOUT```  | True | control session integrity between user browser tabs |
+| ```RELOCK_SERVICE_MULTITABS```  | True | allow multitab browsing |
+| ```RELOCK_SERVICE_PROTECTED```  | True | restrict access to any route by default |
+| ```RELOCK_BLUEPRINT```  | True | HTTP route name |
 
 Example .env:
 ```
-RELOCK_SDK_HOST=172.17.0.5
-RELOCK_SDK_PORT=8111
-RELOCK_LOG_LEVEL=DEBUG
-RELOCK_SDK_TIMEOUT=30
+DB_USER=admin
+DB_PASS=#SupperHidden123
+DB_HOST=172.17.0.3
+DB_PORT=3306
+DB_NAME=demo
+
+REDIS_HOST=172.17.0.2
+REDIS_PORT=6379
+REDIS_DB=1
+
+RELOCK_SERVICE_HOST=127.0.0.1
+RELOCK_SERVICE_API=
+RELOCK_SERVICE_PORT=8111
+RELOCK_SERVICE_POOL=3
+RELOCK_SERVICE_PING=True
+RELOCK_SERVICE_TIMEOUT=60
+RELOCK_SERVICE_TAB_LOGOUT=True
+RELOCK_SERVICE_MULTITABS=True
+RELOCK_SERVICE_PROTECTED=True
+RELOCK_BLUEPRINT=relock
+
+NAME=Relock-Demo
+HOST=relock.demo
+MAIN=main
+IP=0.0.0.0
+VERSION=0.7.8
 ```
 
 ### Docker
 Build the image:
-```docker build -t relock-mw .```
+```docker build -t relock-firewall .```
 
-Run the container:
+Run the server:
 ```
-docker run --rm --name relock-middleware \
+docker run --rm --name relock-firewall \
   -p 8080:8080 \
-  -e RELOCK_SDK_HOST=172.17.0.5 \
-  -e RELOCK_SDK_PORT=8111 \
-  -e RELOCK_LOG_LEVEL=DEBUG \
-  -e RELOCK_SDK_TIMEOUT=30 \
-  relock-mw
+  -e RELOCK_SERVICE_HOST=172.17.0.5 \
+  -e RELOCK_SERVICE_PORT=8111 \
+  -e RELOCK_SERVICE_TIMEOUT=30 \
+  relock-firewall
 ```
-
-### Testing
-Run all endpoint tests using:
-```pytest tests/```
-Each test sends a POST request with minimal payload to all exposed endpoints.
 
 ### Project Structure
 ```
 .
-├── app/
-│   ├── core/           # TCP client, logger, settings
-│   ├── routes/         # FastAPI endpoints
-│   ├── schemas/        # Pydantic models for requests/responses
-│   ├── services/       # Core logic: RelockService
-│   └── main.py         # Entry point
-├── tests/              # Test suite
-├── Dockerfile
-├── requirements.txt
-├── pyproject.toml
-└── README.md
-```
-
-### API Endpoints
-All endpoints are available under the /device prefix.
-
-```
-curl -X POST http://localhost:8080/device/members \
-  -H 'Content-Type: application/json' \
-  -d '{"route": "members"}'
-```
-
-Expected response:
-```
-{
-  "status": true,
-  "payload": { ... },
-  "error": null
-}
+├── README.md
+├── app
+│   ├── __init__.py
+│   ├── cli
+│   ├── contexts
+│   ├── models
+│   ├── plugins
+│   ├── routes
+│   ├── static
+│   └── templates
+├── docker
+│   ├── Dockerfile
+│   ├── docker-entrypoint
+│   ├── init-functions
+│   └── valkey.conf
+├── main.py
+└── service
+    ├── service
+    └── valkey
 ```

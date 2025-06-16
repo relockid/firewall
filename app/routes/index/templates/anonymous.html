@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<section class="h-80">
+		<div class="container h-100">
+			<div class="row justify-content-sm-center h-100">
+
+		<div class="card-body">
+			<h1 class="fs-4 card-title fw-bold mb-4">Anonymous device verified</h1>
+			<div class="mb-3">
+				<p class="text-muted mb-3">The user has never logged into the account before.</p>
+				<p class="text-muted mb-5">Require second authentication factor for user sign-in and eOTK (ephemeral One-Time-Key) veryfication.</p>
+
+				{% include('state.html') %}
+				
+			</div>
+		</div>
+
+		<div class="text-center mt-3 mb-5 text-muted" id="created">
+			<div class="pe-3 text-primary c-pointer" id="create">Create and assign a sample user</div>
+		</div>
+
+		<div class="text-center mt-3 mb-5 text-muted">
+			<a href="{{ url_for('index.index') }}" class="pe-3">Verify again</a>
+			<a href="{{ url_for('relock.clean') }}">Clean browser</a>
+		</div>
+					
+					<div class="text-center text-muted mono">
+						Copyright &copy; 2025 &mdash; relock Inc.
+					</div>
+			</div>
+		</div>
+	</section>
+
+{% include('stats.html') %}
+
+<script type="text/javascript" nonce="{{ request_nonce() }}">
+
+	(function () {
+		'use strict'
+
+		window.addEventListener('XKeyReady', function(event){
+			if(document.getElementById('veryfication').innerHTML.trim() == 'False')
+				document.getElementById('created').classList.add('d-none')
+		});
+
+		document.getElementById('create').addEventListener('click', () => { 
+			window.relock.request('/create', {})
+					.then((response) => response.json())
+					.then((data) => {
+						console.log(data.username)
+						let div = document.getElementById('create');
+							div.replaceWith(div.cloneNode(true));
+							div = document.getElementById('create')
+							div.innerHTML = data.username;
+							div.classList.remove('text-primary');
+							div.classList.add('text-success');
+					 })
+					.catch((error) => {
+						console.error('Request validation failure:', error);
+						document.dispatchEvent(new CustomEvent('XReKeyingStop', {bubbles: true, 										 detail:{ rekeying: false,											 valid: false }}));
+					 });	
+		})
+	})()
+
+</script>
+
+{% endblock %}

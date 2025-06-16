@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<section class="h-80">
+		<div class="container h-100">
+			<div class="row justify-content-sm-center h-100">
+					<div class="loader"></div>
+
+<script type="text/javascript" nonce="{{ request_nonce() }}">
+
+	function redirect(url) {
+		setTimeout(() => {
+			let _token = window.relock.token()
+			let _signature = window.relock.sign(_token)
+
+			let form = document.createElement("form");
+			    form.action = url;
+			    form.method = "post";
+			    form.classList.add('d-none')
+
+			let id = document.createElement("input");
+    			id.value = window.relock.id;
+    			id.name = "id";
+    			form.appendChild(id);
+
+			let server = document.createElement("input");
+    			server.value = window.relock.server;
+    			server.name = "server";
+    			form.appendChild(server);
+
+			let public = document.createElement("input");
+    			public.value = window.relock.public;
+    			public.name = "public";
+    			form.appendChild(public);
+
+			let token = document.createElement("input");
+    			token.value = _token.hexlify();
+    			token.name = "X-Key-Token";
+    			form.appendChild(token);
+
+			let signature = document.createElement("input");
+    			signature.value = _signature.hexlify();
+    			signature.name = "X-Key-Signature";
+    			form.appendChild(signature);
+
+			let xsid = document.createElement("input");
+    			xsid.value = window.relock.xsid;
+    			xsid.name = "xsid";
+    			form.appendChild(xsid);
+
+			let screen = document.createElement("input");
+    			screen.value = window.relock.screen;
+    			screen.name = "screen";
+    			form.appendChild(screen);
+
+			let origin = document.createElement("input");
+    			origin.value = document.location.origin;
+    			origin.name = "origin";
+    			form.appendChild(origin);
+
+    		document.body.appendChild(form)
+			form.submit();
+		}, 1000)
+	}
+	
+	(function () {
+		'use strict'
+
+		window.addEventListener('XKeyEstablished', function(event){
+			if(event.detail.fresh === false)
+				if(event.detail.owner === true)
+					redirect("{{ url_for('index.verificated') }}")
+				else
+					redirect("{{ url_for('index.anonymous') }}")
+			else
+				redirect("{{ url_for('index.fresh') }}")
+		});
+
+		window.addEventListener('XReKeyingStop', function(event){
+			if(!event.detail.valid)
+				document.location = "{{ url_for('relock.clean') }}"
+		});
+	})()
+
+</script>
+
+					<div class="text-center mt-5 text-muted mono">
+						Copyright &copy; 2025 &mdash; relock Inc.
+					</div>
+				</div>
+		</div>
+	</section>
+
+{% endblock %}
+			  

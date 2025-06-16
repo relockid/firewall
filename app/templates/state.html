@@ -1,0 +1,76 @@
+			<div class="stats d-none" id="stats">
+				{% if owner %}
+				<div class="row justify-content-sm-center">
+					<div class="col-4 mono text-end">
+						Device owner:
+					</div>
+					<div class="col-8 mono align-middle text-primary" id="owner" tabindex="{{ owner }}">
+						{{ email }}
+					</div>
+				</div>
+				{% endif %}
+				<div class="row justify-content-sm-center">
+					<div class="col-4 mono text-end">
+						eID - ephemeral id:
+					</div>
+					<div class="col-8 mono align-middle">
+						{{ id }}
+					</div>
+				</div>
+				<div class="row justify-content-sm-center">
+					<div class="col-4 mono text-end">
+						Server public key:
+					</div>
+					<div class="col-8 mono align-middle" id="xsid">
+						{{ server }}
+					</div>
+				</div>
+				<div class="row justify-content-sm-center">
+					<div class="col-4 mono text-end">
+						Client public key:
+					</div>
+					<div class="col-8 mono align-middle">
+						{{ public }}
+					</div>
+				</div>
+				<div class="row justify-content-sm-center">
+					<div class="col-4 mono text-end">
+						Session-X-ID:
+					</div>
+					<div class="col-8 mono align-middle" id="xsid">
+						{{ xsid }}
+					</div>
+				</div>
+				<div class="row justify-content-sm-center">
+					<div class="col-4 mono text-end">
+						Client screen id:
+					</div>
+					<div class="col-8 mono align-middle">
+						{{ screen }}
+					</div>
+				</div>
+				<div class="row justify-content-sm-center">
+					<div class="col-4 mono text-end">
+						eOTK:
+					</div>
+					<div class="col-8 mono align-middle">
+						{{ token }}
+					</div>
+				</div>
+				<div class="row justify-content-sm-center">
+					<div class="col-4 mono text-end">
+						Client signature:
+					</div>
+					<div class="col-8 mono text-start align-middle overflow-hidden">
+						{{ signature }}
+					</div>
+				</div>
+				<div class="row justify-content-sm-center">
+					<div class="col-4 mono text-end">
+						eOTK verification:
+					</div>
+					<div class="col-8 mono text-start align-middle overflow-hidden {% if verify %}text-success{% else %}text-danger{% endif %}" id="veryfication">
+						{{ verify }}
+					</div>
+				</div>
+			</div>

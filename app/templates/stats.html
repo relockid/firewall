@@ -1,0 +1,15 @@
+<script type="text/javascript" nonce="{{ request_nonce() }}">
+
+	(function () {
+		'use strict'
+
+		window.addEventListener('XKeyEstablished', function(event){
+			console.log(event.detail);
+		});
+
+		window.addEventListener('XKeyReady', function(event){
+			document.getElementById('stats').classList.remove('d-none');
+		});
+	})()
+
+</script>
